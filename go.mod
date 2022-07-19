@@ -1,4 +1,4 @@
-module github.com/wtfutil/todoist
+module github.com/loglesby/todoist
 
 go 1.17
 

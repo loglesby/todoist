@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/wtfutil/todoist"
+	"github.com/loglesby/todoist"
 )
 
 func main() {
