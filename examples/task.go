@@ -26,7 +26,7 @@ func main() {
 	fmt.Println(tasks)
 
 	fmt.Println("Create Task")
-	task, err := todoist.CreateTask(todoist.Task{Content: "test", ProjectID: project.ID})
+	task, err := todoist.CreateTask(todoist.Task{Content: "test", ProjectID: int(project.ID)})
 	if err != nil {
 		panic(err)
 	}
