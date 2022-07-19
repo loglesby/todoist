@@ -19,6 +19,7 @@ type TodoistDatetime time.Time
 // Unmarshal from JSON
 func (j *TodoistDatetime) UnmarshalJSON(b []byte) error {
 	s := strings.Trim(string(b), "\"")
+	s = strings.Trim(s, "Z")
 	t, err := time.Parse("2006-01-02T15:04:05", s)
 	if err != nil {
 		return err
