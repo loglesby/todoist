@@ -6,12 +6,42 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strings"
 	"time"
 )
 
 // Token save the personal token from todoist
 var Token string
 var todoistURL = "https://api.todoist.com/rest/v1/"
+
+type TodoistDatetime time.Time
+
+// Unmarshal from JSON
+func (j *TodoistDatetime) UnmarshalJSON(b []byte) error {
+	s := strings.Trim(string(b), "\"")
+	t, err := time.Parse("2006-01-02T15:04:05", s)
+	if err != nil {
+		return err
+	}
+	*j = TodoistDatetime(t)
+	return nil
+}
+
+// Marshal to JSON
+func (j TodoistDatetime) MarshalJSON() ([]byte, error) {
+	return json.Marshal(j.Format("2006-01-02T15:04:05"))
+}
+
+// Format function for printing the date
+func (j TodoistDatetime) Format(s string) string {
+	t := time.Time(j)
+	return t.Format(s)
+}
+
+func (j TodoistDatetime) IsZero() bool {
+	t := time.Time(j)
+	return t.IsZero()
+}
 
 func makeRequest(method, endpoint string, data interface{}) (*http.Response, error) {
 	url := todoistURL + endpoint
@@ -56,14 +86,14 @@ func makeRequest(method, endpoint string, data interface{}) (*http.Response, err
 }
 
 type taskSave struct {
-	Content     string     `json:"content"`
-	ProjectID   int        `json:"project_id,omitempty"`
-	Order       int        `json:"order,omitempty"`
-	LabelIDs    []int      `json:"label_ids,omitempty"`
-	Priority    int        `json:"priority,omitempty"`
-	DueString   string     `json:"due_string,omitempty"`
-	DueDateTime time.Time  `json:"due_datetime,omitempty"`
-	DueLang     string     `json:"due_lang,omitempty"`
+	Content     string          `json:"content"`
+	ProjectID   int             `json:"project_id,omitempty"`
+	Order       int             `json:"order,omitempty"`
+	LabelIDs    []int           `json:"label_ids,omitempty"`
+	Priority    int             `json:"priority,omitempty"`
+	DueString   string          `json:"due_string,omitempty"`
+	DueDateTime TodoistDatetime `json:"due_datetime,omitempty"`
+	DueLang     string          `json:"due_lang,omitempty"`
 }
 
 func (ts taskSave) MarshalJSON() ([]byte, error) {

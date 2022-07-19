@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"testing"
 	"time"
+
 	httpmock "gopkg.in/jarcoal/httpmock.v1"
 )
 
@@ -108,7 +109,7 @@ func TestTaskSaveMarshalJSON(t *testing.T) {
 		t.Errorf("Expected '{\"content\":\"test\",\"label_ids\":[1,2]}' != '%s'", string(b))
 	}
 
-	now := time.Now()
+	now := TodoistDatetime(time.Now())
 	ts = taskSave{Content: "test", DueDateTime: now}
 	s, _ := now.MarshalJSON()
 	b, _ = ts.MarshalJSON()
